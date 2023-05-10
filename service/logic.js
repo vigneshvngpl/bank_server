@@ -42,8 +42,42 @@ register=(acno,uname,psw)=>{
 
 }
 
+
+
+//login logic
+
+login=(acno,psw)=>{
+
+    return db.User.findOne({acno,psw}).then(user=>{
+
+        if(user){
+           
+            return {
+
+                message:"login succesful",
+                status:true,
+                statusCode:200,
+                currentUser:user.uname,
+                currentAcno:user.acno
+
+            }
+    
+            
+        }
+        else{
+
+            return{
+                message:"incorrect acno or password",
+                status:false,
+                statusCode:401
+            }
+        }
+    })
+
+}
+
 module.exports={
 
-    register
+    register,login
 }
 
