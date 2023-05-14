@@ -15,7 +15,7 @@ register=(acno,uname,psw)=>{
             return {
                 message:"user already exists",
                 status:false,
-                statusCode:402
+                statusCode:404
             }
         }
 
@@ -34,7 +34,7 @@ register=(acno,uname,psw)=>{
             return {
                 message:"registered successfully",
                 status:true,
-                statusCode:200
+                statusCode:201
             }
             
         }
