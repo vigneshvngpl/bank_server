@@ -65,3 +65,36 @@ res.status(result.statusCode).json(result)
 })
 
 })
+
+//balance
+
+app.get("/balance/:acno",(req,res)=>{
+    logic.getBalance(req.params.acno).then(result=>{
+        res.status(result.statusCode).json(result)
+
+    })
+})
+
+//single user
+
+app.get("/getUser/:acno",(req,res)=>{
+    logic.getUser(req.params.acno).then(result=>{
+        res.status(result.statusCode).json(result)
+
+    })
+})
+
+//fund transfer
+app.post("/transfer",(req,res)=>{
+
+    logic.fundTransfer(
+        req.body.toAcno,
+        req.body.fromAcno,
+        req.body.amount,
+        req.body.psw,
+        req.body.date,
+
+    ).then(result=>{
+        res.status(result.statusCode).json(result)
+    })
+})
