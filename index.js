@@ -98,3 +98,10 @@ app.post("/transfer",(req,res)=>{
         res.status(result.statusCode).json(result)
     })
 })
+//transaction history
+
+app.get("/transaction/:acno",(req,res)=>{
+    logic.getTransaction(req.params.acno).then(result=>{
+        res.status(result.statusCode).json(result)
+    })
+})

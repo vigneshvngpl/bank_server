@@ -2,6 +2,10 @@
 //import db.js file
 const db = require("./db")
 
+//import jst
+
+const jwt=require("jsonwebtoken")
+
 //creating function for registering logic
 
 register = (acno, uname, psw) => {
@@ -52,13 +56,17 @@ login = (acno, psw) => {
 
         if (user) {
 
+            //token generation
+            const token=jwt.sign({currentAcno:acno},"secretkey123")
             return {
 
                 message: "login succesful",
                 status: true,
                 statusCode: 200,
                 currentUser: user.uname,
-                currentAcno: user.acno
+                currentAcno: user.acno,
+                //send to client
+                token
 
             }
 
@@ -150,7 +158,7 @@ fundTransfer = (toAcno, fromAcno, amount, psw, date) => {
                         touser.save()
 
                         return {
-                            message:"transaction success",
+                            message:"Transaction Success",
                             status:true,
                             statusCode:200,
                             balance:fromuser.balance
@@ -160,7 +168,7 @@ fundTransfer = (toAcno, fromAcno, amount, psw, date) => {
                 }
                 else {
                     return {
-                        message: "invalid credit credential",
+                        message: "Invalid Credit credential",
                         status: false,
                         statusCode: 404
                     }
@@ -177,9 +185,22 @@ fundTransfer = (toAcno, fromAcno, amount, psw, date) => {
         }
     })
 }
+//transaction history
+getTransaction=(acno)=>{
+    return db.User.findOne({acno}).then(user=>{
+        if(user){
+            return{
+            message:user.transactions,
+            status:true,
+            statusCode:200
+            }
+
+        }
+    })
+}
 
 module.exports = {
 
-    register, login, getBalance, getUser,fundTransfer
+    register, login, getBalance, getUser,fundTransfer,getTransaction
 }
 
