@@ -11,6 +11,8 @@ const logic=require("./service/logic")
 
 
 
+
+
 //app creation
 
 const app=express()
@@ -23,6 +25,37 @@ app.use(cors({origin:"http://localhost:4200"}))
 //to convert all incoming json data to js
 
 app.use(express.json())
+
+//middle ware
+
+//import jwt
+
+const jwt=require("jsonwebtoken")
+
+const jwtMiddleWare=(req,res,next)=>{
+    
+    console.log(".....middleware.....");
+
+   try{ //access token from request header
+    const token=req.headers["access_token"]
+
+    //verify 
+
+    jwt.verify(token,"secretkey123")
+//to exit this function
+    next()
+}
+catch{
+    res.json(
+        {
+            statusCode:404,
+            status:false,
+            message:"unautherized user"
+        }
+    )
+}
+    
+}
 
 //request 
 
@@ -68,7 +101,7 @@ res.status(result.statusCode).json(result)
 
 //balance
 
-app.get("/balance/:acno",(req,res)=>{
+app.get("/balance/:acno",jwtMiddleWare,(req,res)=>{
     logic.getBalance(req.params.acno).then(result=>{
         res.status(result.statusCode).json(result)
 
@@ -77,7 +110,7 @@ app.get("/balance/:acno",(req,res)=>{
 
 //single user
 
-app.get("/getUser/:acno",(req,res)=>{
+app.get("/getUser/:acno",jwtMiddleWare,(req,res)=>{
     logic.getUser(req.params.acno).then(result=>{
         res.status(result.statusCode).json(result)
 
@@ -85,7 +118,7 @@ app.get("/getUser/:acno",(req,res)=>{
 })
 
 //fund transfer
-app.post("/transfer",(req,res)=>{
+app.post("/transfer",jwtMiddleWare,(req,res)=>{
 
     logic.fundTransfer(
         req.body.toAcno,
@@ -100,7 +133,7 @@ app.post("/transfer",(req,res)=>{
 })
 //transaction history
 
-app.get("/transaction/:acno",(req,res)=>{
+app.get("/transaction/:acno",jwtMiddleWare,(req,res)=>{
     logic.getTransaction(req.params.acno).then(result=>{
         res.status(result.statusCode).json(result)
     })
