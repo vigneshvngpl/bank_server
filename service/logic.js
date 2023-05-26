@@ -4,7 +4,7 @@ const db = require("./db")
 
 //import jst
 
-const jwt=require("jsonwebtoken")
+const jwt = require("jsonwebtoken")
 
 //creating function for registering logic
 
@@ -57,7 +57,7 @@ login = (acno, psw) => {
         if (user) {
 
             //token generation
-            const token=jwt.sign({currentAcno:acno},"secretkey123")
+            const token = jwt.sign({ currentAcno: acno }, "secretkey123")
             return {
 
                 message: "login succesful",
@@ -137,7 +137,7 @@ fundTransfer = (toAcno, fromAcno, amount, psw, date) => {
 
                     }
                     else {
-                        fromuser.balance-= amnt
+                        fromuser.balance -= amnt
                         fromuser.transactions.push(
                             {
                                 type: "DEBIT",
@@ -158,10 +158,10 @@ fundTransfer = (toAcno, fromAcno, amount, psw, date) => {
                         touser.save()
 
                         return {
-                            message:"Transaction Success",
-                            status:true,
-                            statusCode:200,
-                            balance:fromuser.balance
+                            message: "Transaction Success",
+                            status: true,
+                            statusCode: 200,
+                            balance: fromuser.balance
                         }
                     }
 
@@ -186,21 +186,40 @@ fundTransfer = (toAcno, fromAcno, amount, psw, date) => {
     })
 }
 //transaction history
-getTransaction=(acno)=>{
-    return db.User.findOne({acno}).then(user=>{
-        if(user){
-            return{
-            message:user.transactions,
-            status:true,
-            statusCode:200
+getTransaction = (acno) => {
+    return db.User.findOne({ acno }).then(user => {
+        if (user) {
+            return {
+                message: user.transactions,
+                status: true,
+                statusCode: 200
             }
 
         }
     })
 }
 
+deleteAc = (acno) => {
+    return db.User.deleteOne({ acno }).then(deleteCount => {
+        if (deleteCount) {
+            return {
+                message: "user deleted",
+                status: false,
+                statusCode: 200
+            }
+        }
+        else {
+            return {
+                message: "invalid user",
+                status: false,
+                statusCode: 404
+            }
+        }
+    })
+}
+
 module.exports = {
 
-    register, login, getBalance, getUser,fundTransfer,getTransaction
+    register, login, getBalance, getUser, fundTransfer, getTransaction,deleteAc
 }
 
